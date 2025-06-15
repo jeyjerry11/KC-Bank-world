@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KC Bank - Success</title>
+  <style>
+    body {
+      background: #8e2de2;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 60px 20px;
+    }    h1 ont-size: 3rem;
+      margin-bottom: 20px;
+      font-weight: 900;
+    }
+    p {
+      font-size: 1.4rem;
+      margin-bottom: 40px;
+    }
+    button {
+      background-color: #dda20b;
+      color: #4a2b07;
+      border: none;
+      padding: 20px 40px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #b17d07;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome to KC Bank!</h1>
+  <p>Your account is live with a starting balance of <strong>₦5,000,000</strong></p>
+  <button onclick="redirectToWelcome()">Start Banking</button>
+
+  <script>
+    function redirectToWelcome() {
+      window.location.href = "dashboard.html";
+    }
+  </script>
+</body>
+</html>

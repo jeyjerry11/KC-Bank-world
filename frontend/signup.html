@@ -1,0 +1,172 @@
+,<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KC Bank - Sign Up</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0c0c0c;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    h2, h3 {
+      text-align: center;
+      color: #f4f4f4;
+    }
+
+    form {
+      width: 100%;
+      max-width: 400px;
+      background: #161616;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #262626;
+      color: #eee;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 1rem;
+      color: white;
+      margin-bottom: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+    }
+
+    button:hover {
+      background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+    }
+
+    .note {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #aaa;
+    }
+
+    .note a {
+      color: #5ab0ff;
+      text-decoration: none;
+    }
+
+    .note a:hover {
+      text-decoration: underline;
+    }
+
+    #virtualAccountInfo {
+      margin-top: 10px;
+      text-align: center;
+      color: #76ffb4;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🔥 Create Your KC Bank Account</h2>
+
+  <form id="signupForm">
+    <input type="text" placeholder="Full Name" id="fullName" required />
+    <input type="email" placeholder="Email Address" id="email" required />
+    <input type="password" placeholder="Password" id="password" required />
+<input type="password" id="confirmPassword" placeholder="Confirm Password" required />
+
+    <input type="text" id="recvPhone" placeholder="Phone Number" required />
+    <input type="text" id="recvBVN" placeholder="BVN" required />
+
+    <button type="submit">🚀 Generate Account & Continue</button>
+    <div class="note">Already have an account? <a href="login.html">Log in</a></div>
+  </form>
+
+  <div id="virtualAccountInfo"></div>
+
+  <script>
+  document.getElementById("signupForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById("fullName").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+    const phone = document.getElementById("recvPhone").value.trim();
+    const bvn = document.getElementById("recvBVN").value.trim();
+
+    if (password !== confirmPassword) {
+      alert("🚫 Passwords don't match!");
+      return;
+    }
+
+    const nameParts = name.split(" ");
+    const firstname = nameParts[0];
+    const lastname = nameParts.slice(1).join(" ") || ".";
+
+    try {
+      // STEP 1: Create virtual account
+      const response = await fetch('http://localhost:5000/api/flw/create-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          phone_number: phone,
+          firstname,
+          lastname,
+          bvn
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.status !== "success") {
+        alert("❌ Error generating virtual account. Try again.");
+        return;
+      }
+
+      document.getElementById("virtualAccountInfo").innerText =
+        `🎉 Virtual Account: ${result.data.account_number} - ${result.data.bank_name}`;
+
+      // STEP 2: Send verification email
+      const emailRes = await fetch("http://localhost:5000/api/email/send-code", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name })
+      });
+
+      const emailData = await emailRes.json();
+
+      if (emailData.success) {
+        alert("✅ Verification code sent to your email.");
+        window.location.href = "signup-step2.html?email=" + encodeURIComponent(email);
+      } else {
+        alert("❌ Failed to send email. Try again.");
+      }
+
+    } catch (err) {
+      console.error(err);
+      alert("⚠️ Something went wrong. Check your backend.");
+    }
+  });
+</script>
+
+</body>
+</html>

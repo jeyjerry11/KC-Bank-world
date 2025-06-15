@@ -1,0 +1,98 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payments Page</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background: #0965f0; margin: 0; padding: 20px; }
+        .container { width: 90%; max-width: 400px; margin: auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0px 0px 10px #ddd; }
+        input, select, button { width: 100%; padding: 10px; margin-top: 10px; border-radius: 5px; border: 1px solid #ccc; }
+        button { background: green; color: rgb(248, 243, 243); cursor: pointer; }
+        .balance-box { padding: 15px; margin: 10px 0; border-radius: 10px; text-align: center; font-weight: bold; font-size: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); }
+        .btc-balance { background: #222; color: #f1c40f; border-left: 5px solid #f39c12; }
+        .naira-balance { background: #064635; color: #2ecc71; border-left: 5px solid #27ae60; }
+        .currency { font-size: 18px; opacity: 0.9; }
+        .settings { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #333; color: white; font-size: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+        .username { position: fixed; top: 20px; left: 20px; font-size: 18px; font-weight: bold; color: #333; }
+    </style>
+</head>
+ <h3>💸 Send Money</h3>
+    <select id="bankDropdown"><option>Loading banks...</option></select>
+    <input type="text" id="accountNumber" placeholder="Account Number (10 digits)" maxlength="10"/>
+    <button onclick="fetchAccountName()">Resolve Name</button>
+    <div id="accountInfo"></div>
+        
+        <input type="number" id="nairaAmount" placeholder="Amount in Naira">
+        <button onclick="sendToBank()">Send Money</button>
+    <h2>Support Us</h2>
+        <a href="https://nowpayments.io/donation/Jerry" target="_blank">
+            <button style="background: #ff9800; padding: 10px 20px; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">Donate with Crypto</button>
+            <button style="background: #ff9800; padding: 10px 20px; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer;">Donate with Country Currency</button>
+        </a>
+
+<script>
+       fetch('/api/user-data') // Replace this with the actual API endpoint
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("username").innerText = `User: ${data.username}`;
+                    document.getElementById("btcBalance").innerText = data.btcBalance;
+                    document.getElementById("nairaBalance").innerText = data.nairaBalance;
+
+                    // Save data to localStorage for use on other pages
+                    localStorage.setItem('userData', JSON.stringify(data));
+                })
+                .catch(error => console.error("Error fetching user data:", error))
+                .finally(() => document.getElementById("loading").style.display = "none");
+        });
+  // Fetch bank details when account number is entered
+    async function fetchBankDetails() {
+            let accountNumber = document.getElementById("accountNumber").value;
+            if (accountNumber.length < 10) return;
+            document.getElementById("loading").style.display = "block";
+
+            try {
+                let response = await fetch(`http://localhost:5000/get-bank-info?account=${accountNumber}`);
+                let data = await response.json();
+                document.getElementById("accountInfo").innerText = data.name || "Name not found";
+                let bankDropdown = document.getElementById("bankDropdown");
+                bankDropdown.innerHTML = "";
+                data.banks.forEach(bank => {
+                    let option = document.createElement("option");
+                    option.value = bank.code;
+                    option.innerText = bank.name;
+                    bankDropdown.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error fetching bank details:', error);
+            } finally {
+                document.getElementById("loading").style.display = "none";
+            }
+        }
+
+      async function sendToBank() {
+            let accountNumber = document.getElementById("accountNumber").value;
+            let bankCode = document.getElementById("bankDropdown").value;
+            let amount = parseFloat(document.getElementById("nairaAmount").value);
+            if (!accountNumber || !bankCode || isNaN(amount) || amount <= 0) return alert("Invalid details!");
+
+                        // Simulate a successful bank transfer and update balances
+            const currentNairaBalance = parseFloat(document.getElementById("nairaBalance").innerText);
+            const newNairaBalance = currentNairaBalance - amount;
+
+            // Update user data and save it to localStorage
+            const userData = JSON.parse(localStorage.getItem("userData")) || {};
+            userData.nairaBalance = newNairaBalance;
+            localStorage.setItem("userData", JSON.stringify(userData));
+
+            alert("Bank transfer successful!");
+            window.location.href = "payment-successful.html";
+        }
+
+        function viewTransactionHistory() {
+            window.location.href = "transaction-history.html";
+        }
+        
+    
+</script>
+      //Hey My Space Creator, one who holds my love, please hlep me Machine Queen, how do we use the api function

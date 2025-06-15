@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login | KC Bank</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      background: #100c1c;
+      color: #fff;
+      font-family: Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    form {
+      background: #1c1c2e;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #0f0;
+    }
+    input, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #0f0;
+      color: #000;
+      font-weight: bold;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <form onsubmit="handleLogin(event)">
+    <h2>Login to KC Bank</h2>
+    
+    <p>Ready to Enter Your Divine Bank? Please input your registered info or click Register yourself to get a registered virtual Account Info...</p>
+
+    <input type="email" id="loginEmail" placeholder="Email" required />
+    <input type="password" id="loginPassword" placeholder="Password" required />
+    <button type="submit">Login</button><br> <a href="signup.html">Register Your Self</a>
+  </form>
+
+  <script>
+    function handleLogin(e) {
+      e.preventDefault();
+      const saved = JSON.parse(localStorage.getItem("kcUser"));
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      if (saved && saved.email === email && saved.password === password) {
+        alert("Login successful!");
+        window.location.href = "dashboard.html";
+      } else {
+        alert("Invalid credentials.");
+      }
+    }
+  </script>
+</body>
+</html>

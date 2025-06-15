@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard | KC Bank</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <style>
+    body {
+      background: #0==808;
+      color: #e70ad5;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .balance {
+      margin-top: 30px;
+      background: #121212;
+      padding: 20px;
+      border-radius: 10px;
+    }
+  </style>
+
+  <!-- ✅ Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-XXXXXXX'); // Replace with your GA4 Measurement ID
+  </script>
+</head>
+<body>
+  <header>
+    <h1>KC Bank</h1>
+    <button onclick="logout()" style="background:#f00;color:#fff;padding:10px;">Logout</button>
+  </header>
+
+  <section class="balance">
+    <h2>Hello, <span id="userName">...</span> 👋</h2>
+    <p>Your balance is: ₦<span id="balance">5,000,000</span></p>
+    <button onclick="trackSendMoney()">Send ₦5,000</button>
+    <button onclick="trackByeAirtime()">Airtime ₦10,000</button>
+
+    <button onclick="trackFundBet()">Fund Bet ₦5,000</button>
+  </section>
+  
+nnn <!-- ✅ Custom Event Trigge ------>
+  <script>
+    function trackSendMoney() {
+      gtag('event', 'send_money', {
+        currency: 'NGN'
+      alert('Event sent to GA4: ₦5,000');
+    }
+  </script>
+
+  <!-- ✅ Local storage logic -->
+  <script>
+    const user = JSON.parse(localStorage.getItem("kcUser"));
+    document.getElementById("userName").textContent = user?.name || "User";
+
+    function logout() {
+      localStorage.removeItem("kcUser");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
